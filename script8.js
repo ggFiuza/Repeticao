@@ -1,95 +1,84 @@
-class Pokemon {
-  constructor(nome) {
-    this.nome = nome;
-    this.hp_inicial = Math.floor(Math.random() * 6) + 5; // HP entre 5 e 10
-    this.ataque_inicial = Math.floor(Math.random() * 3) + 1; // Ataque entre 1 e 3
-    this.level = 1;
-    this.hp = this.hp_inicial;
-    this.ataque = this.ataque_inicial;
-    this.vitorias = 0;
-    this.derrotas = 0;
-  }
+let pokemon = {
+  nome: prompt("Digite o nome do seu Pokemão:"),
+  hpInicial: 10,
+  hp: 10,
+  ataqueInicial: Math.floor(Math.random() * 3) + 1, 
+  ataque: 0,
+  level: 1,
+  vitorias: 0,
+  derrotas: 0
+};
+pokemon.ataque = pokemon.ataqueInicial; 
 
-  batalhar(inimigo) {
-    while (this.hp > 0 && inimigo.hp > 0) {
-      // O pokemão ataca
-      inimigo.hp -= this.ataque;
-      if (inimigo.hp <= 0) {
-        this.vitorias++;
-        // Após vitória, o pokemão sobe um atributo
-        if (Math.random() > 0.5) {
-          this.hp++;
-        } else {
-          this.ataque++;
-        }
-        console.log(`${this.nome} venceu a batalha!`);
-        return true;
-      }
+let opcao;
+do {
+  opcao = prompt(
+    "Escolha uma opção:\n" +
+    "1) Batalhar\n" +
+    "2) Vitórias vs Derrotas\n" +
+    "3) Listar Pokémon\n" +
+    "4) Sair"
+  );
 
-      // O inimigo ataca
-      this.hp -= inimigo.ataque;
-      if (this.hp <= 0) {
-        this.derrotas++;
-        console.log(`${this.nome} perdeu a batalha.`);
-        return false;
+  if (opcao === "1") {
+
+    let inimigo = {
+      hp: Math.floor(Math.random() * 6) + 5,  
+      ataque: Math.floor(Math.random() * 5)   
+    };
+
+    let turno = 0;
+    let meuHP = pokemon.hp;
+    let inimigoHP = inimigo.hp;
+
+    console.log("\n Uma batalha começou!");
+    console.log("Inimigo -> HP: " + inimigo.hp + ", Ataque: " + inimigo.ataque);
+
+    while (meuHP > 0 && inimigoHP > 0) {
+      if (turno % 2 === 0) {
+        inimigoHP -= pokemon.ataque;
+        console.log(pokemon.nome + " atacou! Inimigo HP: " + Math.max(inimigoHP, 0));
+      } else {
+        meuHP -= inimigo.ataque;
+        console.log("Inimigo atacou! " + pokemon.nome + " HP: " + Math.max(meuHP, 0));
       }
+      turno++;
     }
-  }
 
-  mostrarDadosIniciais() {
-    console.log(`${this.nome} - Dados Iniciais:`);
-    console.log(`HP inicial: ${this.hp_inicial}`);
-    console.log(`Ataque inicial: ${this.ataque_inicial}`);
-    console.log(`Level: ${this.level}`);
-  }
+    if (meuHP > 0) {
+      console.log("Você venceu a batalha!");
+      pokemon.vitorias++;
+      pokemon.level++;
 
-  mostrarDadosAtuais() {
-    console.log(`${this.nome} - Dados Atuais:`);
-    console.log(`HP: ${this.hp}`);
-    console.log(`Ataque: ${this.ataque}`);
-    console.log(`Level: ${this.level}`);
-    console.log(`Vitórias: ${this.vitorias}`);
-    console.log(`Derrotas: ${this.derrotas}`);
-  }
-}
-
-function menu() {
-  const nome = prompt("Digite o nome do seu Pokémon: ");
-  const pokemon = new Pokemon(nome);
-
-  while (true) {
-    console.log("\nMenu:");
-    console.log("1) Batalhar");
-    console.log("2) Vitórias vs Derrotas");
-    console.log("3) Listar objeto");
-    console.log("4) Sair");
-
-    const opcao = prompt("Escolha uma opção:");
-
-    if (opcao === "1") {
-      // Criar um inimigo aleatório
-      const inimigoNome = `Inimigo${Math.floor(Math.random() * 100) + 1}`;
-      const inimigo = new Pokemon(inimigoNome);
-      console.log(`\n${inimigoNome} apareceu com HP: ${inimigo.hp} e Ataque: ${inimigo.ataque}`);
-      pokemon.batalhar(inimigo);
-
-    } else if (opcao === "2") {
-      console.log(`\nVitórias: ${pokemon.vitorias} | Derrotas: ${pokemon.derrotas}`);
-
-    } else if (opcao === "3") {
-      console.log("\nDados Iniciais:");
-      pokemon.mostrarDadosIniciais();
-      console.log("\nDados Atuais:");
-      pokemon.mostrarDadosAtuais();
-
-    } else if (opcao === "4") {
-      console.log("Saindo do programa...");
-      break;
-
+      let escolha = prompt("Escolha um atributo para aumentar permanentemente:\n1) HP\n2) Ataque");
+      if (escolha === "1") {
+        pokemon.hp++;
+        pokemon.hpInicial++;
+        console.log(pokemon.nome + " ganhou +1 de HP!");
+      } else if (escolha === "2") {
+        pokemon.ataque++;
+        pokemon.ataqueInicial++;
+        console.log(pokemon.nome + " ganhou +1 de Ataque!");
+      }
     } else {
-      console.log("Opção inválida! Tente novamente.");
+      console.log("Você perdeu a batalha...");
+      pokemon.derrotas++;
     }
-  }
-}
 
-menu();
+    pokemon.hp = pokemon.hpInicial;
+
+  } else if (opcao === "2") {
+    console.log("Vitórias: " + pokemon.vitorias + "  Derrotas: " + pokemon.derrotas);
+  } else if (opcao === "3") {
+    console.log("\nStatus do Pokemão:");
+    console.log("Nome: " + pokemon.nome);
+    console.log("Level: " + pokemon.level);
+    console.log("HP Atual: " + pokemon.hp);
+    console.log("HP Inicial: " + pokemon.hpInicial);
+    console.log("Ataque Atual: " + pokemon.ataque);
+    console.log("Ataque Inicial: " + pokemon.ataqueInicial);
+  }
+
+} while (opcao !== "4");
+
+console.log("Programa encerrado");
